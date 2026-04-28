@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Web\Student;
 
 use App\Http\Controllers\Controller;
+use App\Models\Attendance;
+use App\Models\AttendanceLog;
 use App\Models\Course;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -81,7 +83,6 @@ class ClassEnrollmentController extends Controller
     public function show(Request $request, Course $course): Response
     {
         $student = $request->user()?->student;
-        abort_unless($student, 403);
 
         $isEnrolled = $student->courses()
             ->where('courses.id', $course->id)
@@ -96,45 +97,22 @@ class ClassEnrollmentController extends Controller
             'classroom.location:id,name',
         ]);
 
-        $meetings = collect();
-
-        if (Schema::hasTable('attendances')) {
-            $hasAttendanceLogs = Schema::hasTable('attendance_logs');
-
-            $query = DB::table('attendances as attendances')
-                ->where('attendances.course_id', $course->id)
-                ->orderBy('attendances.date');
-
-            if ($hasAttendanceLogs) {
-                $query->leftJoin('attendance_logs as logs', function ($join) use ($student) {
-                    $join->on('logs.attendance_id', '=', 'attendances.id')
-                        ->where('logs.student_id', '=', $student->id);
-                });
-            }
-
-            $selects = [
-                'attendances.id',
-                'attendances.name',
-                'attendances.date',
-            ];
-
-            if ($hasAttendanceLogs) {
-                $selects[] = 'logs.status as status';
-                $selects[] = 'logs.updated_at as logged_at';
-            }
-
-            $meetings = $query
-                ->select($selects)
-                ->get()
-                ->map(fn($item) => [
-                    'id' => $item->id,
-                    'name' => $item->name,
-                    'date' => $item->date,
-                    'status' => $item->status ?? null,
-                    'logged_at' => $item->logged_at ?? null,
-                ])
-                ->values();
-        }
+        $meetings = $course->attendances()
+            ->with(['logs' => function ($query) use ($student) {
+                $query->where('student_id', $student->id);
+            }])
+            ->orderBy('date')
+            ->get()
+            ->map(function ($attendance) {
+                $log = $attendance->logs->first();
+                return [
+                    'id' => $attendance->id,
+                    'name' => $attendance->name,
+                    'date' => $attendance->date,
+                    'status' => $log?->status,
+                    'logged_at' => $log?->updated_at,
+                ];
+            });
 
         return Inertia::render('student/courses/show', [
             'course' => $course,
@@ -145,10 +123,6 @@ class ClassEnrollmentController extends Controller
     public function enroll(Request $request, Course $course): RedirectResponse
     {
         $student = $request->user()?->student;
-
-        if (! $student) {
-            return back()->with('error', 'Student tidak ditemukan.');
-        }
 
         $alreadyEnrolled = $student->courses()
             ->where('courses.id', $course->id)

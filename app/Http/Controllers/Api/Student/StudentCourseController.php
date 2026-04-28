@@ -74,43 +74,23 @@ class StudentCourseController extends Controller
 
         $meetings = collect();
 
-        if (Schema::hasTable('attendances')) {
-            $hasAttendanceLogs = Schema::hasTable('attendance_logs');
+        $meetings = $course->attendances()
+            ->with(['logs' => function ($query) use ($student) {
+                $query->where('student_id', $student->id);
+            }])
+            ->orderBy('date')
+            ->get()
+            ->map(function ($attendance) {
+                $log = $attendance->logs->first();
+                return [
+                    'id' => $attendance->id,
+                    'name' => $attendance->name,
+                    'date' => $attendance->date,
+                    'status' => $log?->status,
+                    'logged_at' => $log?->updated_at,
+                ];
+            });
 
-            $query = DB::table('attendances as attendances')
-                ->where('attendances.course_id', $course->id)
-                ->orderBy('attendances.date');
-
-            if ($hasAttendanceLogs) {
-                $query->leftJoin('attendance_logs as logs', function ($join) use ($student) {
-                    $join->on('logs.attendance_id', '=', 'attendances.id')
-                        ->where('logs.student_id', '=', $student->id);
-                });
-            }
-
-            $selects = [
-                'attendances.id',
-                'attendances.name',
-                'attendances.date',
-            ];
-
-            if ($hasAttendanceLogs) {
-                $selects[] = 'logs.status as status';
-                $selects[] = 'logs.updated_at as logged_at';
-            }
-
-            $meetings = $query
-                ->select($selects)
-                ->get()
-                ->map(fn ($item) => [
-                    'id' => $item->id,
-                    'name' => $item->name,
-                    'date' => $item->date,
-                    'status' => $item->status ?? null,
-                    'logged_at' => $item->logged_at ?? null,
-                ])
-                ->values();
-        }
 
         return response()->json([
             'message' => 'Detail kelas berhasil diambil.',
