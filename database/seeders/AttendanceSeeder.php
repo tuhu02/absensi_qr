@@ -38,7 +38,7 @@ class AttendanceSeeder extends Seeder
             for ($meeting = 1; $meeting <= 16; $meeting++) {
                 $meetingDate = $firstMeetingDate->addWeeks($meeting - 1)->toDateString();
 
-                DB::table('attendances')->updateOrInsert(
+                DB::table('course_sessions')->updateOrInsert(
                     [
                         'course_id' => $course->id,
                         'date' => $meetingDate,

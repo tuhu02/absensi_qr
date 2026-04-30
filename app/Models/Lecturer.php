@@ -29,6 +29,6 @@ class Lecturer extends Model
 
     public function classes(): HasMany
     {
-        return $this->hasMany(ClassRoom::class);
+        return $this->hasMany(Course::class);
     }
 }

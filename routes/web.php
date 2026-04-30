@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Web\Admin\AdminController;
 use App\Http\Controllers\Web\Admin\CourseController;
+use App\Http\Controllers\Web\Lecturer\CourseController as LecturerCourseController;
 use App\Http\Controllers\Web\Admin\FacultyController;
 use App\Http\Controllers\Web\Admin\LecturerController;
 use App\Http\Controllers\Web\Admin\RoleController;
@@ -39,6 +40,9 @@ Route::middleware(['auth', LecturerMiddleware::class])->prefix('lecturer')->name
     Route::get('dashboard', function () {
         return Inertia::render('lecturer/dashboard');
     })->name('dashboard');
+
+    Route::get('classes', [LecturerCourseController::class, 'index'])->name('classes');
+    Route::get('classes/{id}', [LecturerCourseController::class, 'show'])->name('classes.show');
 });
 
 Route::middleware(['auth', AdminMiddleware::class])->prefix('admin')->name('admin.')->group(function () {

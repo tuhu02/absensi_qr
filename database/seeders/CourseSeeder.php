@@ -63,39 +63,35 @@ class CourseSeeder extends Seeder
             ['start' => '15:00', 'end' => '16:40'],
         ];
 
-        $courseIndex = 0;
-
+        $letters = range('A', 'Z');
+        $subjectCount = count($subjectPool);
         foreach ($studyPrograms as $studyProgram) {
-            for ($i = 0; $i < 4; $i++) {
-                $subjectName = $subjectPool[$courseIndex % count($subjectPool)];
-
-                // Nama course unique secara global
-                $courseName = sprintf('%s %d', $subjectName, $courseIndex + 1);
-
-                $lecturer = $lecturers[$courseIndex % $lecturers->count()];
-                $room = $rooms[$courseIndex % $rooms->count()];
-                $slot = $timeSlots[$courseIndex % count($timeSlots)];
-                $day = $days[$courseIndex % count($days)];
-
-                $roomLabel = trim(
-                    ($room->location?->name ? $room->location->name . ' - ' : '') . $room->name
-                );
-
-                Course::query()->updateOrCreate(
-                    ['name' => $courseName],
-                    [
-                        'study_program_id' => $studyProgram->id,
-                        'semester_id' => $semester->id,
-                        'lecturer_id' => $lecturer->id,
-                        'room_id' => $room->id,
-                        'room' => $roomLabel,
-                        'day' => $day,
-                        'start_time' => $slot['start'],
-                        'end_time' => $slot['end'],
-                    ]
-                );
-
-                $courseIndex++;
+            for ($subjectIdx = 0; $subjectIdx < $subjectCount; $subjectIdx++) {
+                $subjectName = $subjectPool[$subjectIdx];
+                for ($classIdx = 0; $classIdx < 3; $classIdx++) { // 3 kelas per subject
+                    $classLetter = $letters[$classIdx];
+                    $courseName = sprintf('%s %s', $subjectName, $classLetter);
+                    $lecturer = $lecturers[($subjectIdx * 3 + $classIdx) % $lecturers->count()];
+                    $room = $rooms[($subjectIdx * 3 + $classIdx) % $rooms->count()];
+                    $slot = $timeSlots[($subjectIdx * 3 + $classIdx) % count($timeSlots)];
+                    $day = $days[($subjectIdx * 3 + $classIdx) % count($days)];
+                    $roomLabel = trim(
+                        ($room->location?->name ? $room->location->name . ' - ' : '') . $room->name
+                    );
+                    Course::query()->updateOrCreate(
+                        ['name' => $courseName],
+                        [
+                            'study_program_id' => $studyProgram->id,
+                            'semester_id' => $semester->id,
+                            'lecturer_id' => $lecturer->id,
+                            'room_id' => $room->id,
+                            'room' => $roomLabel,
+                            'day' => $day,
+                            'start_time' => $slot['start'],
+                            'end_time' => $slot['end'],
+                        ]
+                    );
+                }
             }
         }
     }

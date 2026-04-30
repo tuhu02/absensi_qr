@@ -74,22 +74,44 @@ class StudentCourseController extends Controller
 
         $meetings = collect();
 
-        $meetings = $course->attendances()
-            ->with(['logs' => function ($query) use ($student) {
-                $query->where('student_id', $student->id);
-            }])
-            ->orderBy('date')
-            ->get()
-            ->map(function ($attendance) {
-                $log = $attendance->logs->first();
-                return [
-                    'id' => $attendance->id,
-                    'name' => $attendance->name,
-                    'date' => $attendance->date,
-                    'status' => $log?->status,
-                    'logged_at' => $log?->updated_at,
-                ];
-            });
+
+        if (Schema::hasTable('course_sessions')) {
+            $hasAttendances = Schema::hasTable('attendances');
+
+            $query = DB::table('course_sessions as sessions')
+                ->where('sessions.course_id', $course->id)
+                ->orderBy('sessions.date');
+
+            if ($hasAttendances) {
+                $query->leftJoin('attendances as logs', function ($join) use ($student) {
+                    $join->on('logs.course_session_id', '=', 'sessions.id')
+                        ->where('logs.student_id', '=', $student->id);
+                });
+            }
+
+            $selects = [
+                'sessions.id',
+                'sessions.name',
+                'sessions.date',
+            ];
+
+            if ($hasAttendances) {
+                $selects[] = 'logs.status as status';
+                $selects[] = 'logs.updated_at as logged_at';
+            }
+
+            $meetings = $query
+                ->select($selects)
+                ->get()
+                ->map(fn($item) => [
+                    'id' => $item->id,
+                    'name' => $item->name,
+                    'date' => $item->date,
+                    'status' => $item->status ?? null,
+                    'logged_at' => $item->logged_at ?? null,
+                ])
+                ->values();
+        }
 
 
         return response()->json([

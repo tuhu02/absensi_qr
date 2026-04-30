@@ -22,7 +22,7 @@ class EmailVerificationController extends Controller
 
         if ($user->hasVerifiedEmail()) {
             return response()->json([
-                'message' => 'Email already verified'
+                'message' => 'Email sudah diverifikasi'
             ], 400);
         }
 

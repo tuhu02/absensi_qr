@@ -1,15 +1,24 @@
 import { Transition } from '@headlessui/react';
 import { Form, Head, Link, usePage } from '@inertiajs/react';
+import React from 'react';
+
 import DeleteUser from '@/components/student/delete-user';
 import Heading from '@/components/student/heading';
 import InputError from '@/components/student/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import AppLayout from '@/layouts/student-layout';
 import SettingsLayout from '@/layouts/settings/layout';
-import type { BreadcrumbItem } from '@/types';
 import ProfileController from '@/actions/App/Http/Controllers/Settings/ProfileController';
+import type { BreadcrumbItem } from '@/types';
 import { edit } from '@/routes/profile';
 import { send } from '@/routes/verification';
 
@@ -20,6 +29,19 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
+type StudentProfile = {
+    gender?: string | null;
+    date_of_birth?: string | null;
+};
+
+type AuthUser = {
+    name?: string | null;
+    email?: string | null;
+    address?: string | null;
+    email_verified_at?: string | null;
+    student?: StudentProfile | null;
+};
+
 export default function Profile({
     mustVerifyEmail,
     status,
@@ -27,7 +49,13 @@ export default function Profile({
     mustVerifyEmail: boolean;
     status?: string;
 }) {
-    const { auth } = usePage().props;
+    const { auth } = usePage().props as unknown as {
+        auth: {
+            user: AuthUser;
+        };
+    };
+
+    const [gender, setGender] = React.useState(auth.user.student?.gender ?? '');
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -58,7 +86,7 @@ export default function Profile({
                                     <Input
                                         id="name"
                                         className="mt-1 block w-full"
-                                        defaultValue={auth.user.name}
+                                        defaultValue={auth.user.name ?? ''}
                                         name="name"
                                         required
                                         autoComplete="name"
@@ -78,7 +106,7 @@ export default function Profile({
                                         id="email"
                                         type="email"
                                         className="mt-1 block w-full"
-                                        defaultValue={auth.user.email}
+                                        defaultValue={auth.user.email ?? ''}
                                         name="email"
                                         required
                                         autoComplete="username"
@@ -94,13 +122,31 @@ export default function Profile({
                                 <div className="grid gap-2">
                                     <Label htmlFor="gender">Gender</Label>
 
-                                    <Input
-                                        id="gender"
-                                        className="mt-1 block w-full"
-                                        defaultValue={auth.user.gender ?? ''}
+                                    <Select
+                                        value={gender}
+                                        onValueChange={setGender}
+                                    >
+                                        <SelectTrigger
+                                            id="gender"
+                                            className="w-full"
+                                        >
+                                            <SelectValue placeholder="Select gender" />
+                                        </SelectTrigger>
+
+                                        <SelectContent>
+                                            <SelectItem value="male">
+                                                Male
+                                            </SelectItem>
+                                            <SelectItem value="female">
+                                                Female
+                                            </SelectItem>
+                                        </SelectContent>
+                                    </Select>
+
+                                    <input
+                                        type="hidden"
                                         name="gender"
-                                        autoComplete="sex"
-                                        placeholder="Male, Female, etc."
+                                        value={gender}
                                     />
 
                                     <InputError
@@ -119,7 +165,8 @@ export default function Profile({
                                         type="date"
                                         className="mt-1 block w-full"
                                         defaultValue={
-                                            auth.user.date_of_birth ?? ''
+                                            auth.user.student?.date_of_birth ??
+                                            ''
                                         }
                                         name="date_of_birth"
                                         autoComplete="bday"
@@ -175,6 +222,21 @@ export default function Profile({
                                             )}
                                         </div>
                                     )}
+
+                                {status ===
+                                    'email-changed-verification-sent' && (
+                                    <div className="rounded-md bg-blue-50 p-4 text-sm">
+                                        <p className="font-medium text-blue-900">
+                                            Email berhasil diganti! 📧
+                                        </p>
+                                        <p className="mt-1 text-blue-800">
+                                            Silakan cek email Anda untuk
+                                            memverifikasi alamat email baru.
+                                            Link verifikasi berlaku selama 60
+                                            menit.
+                                        </p>
+                                    </div>
+                                )}
 
                                 <div className="flex items-center gap-4">
                                     <Button

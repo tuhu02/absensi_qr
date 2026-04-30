@@ -48,8 +48,8 @@ class Course extends Model
             ->withTimestamps();
     }
 
-    public function attendances(): HasMany
+    public function sessions()
     {
-        return $this->hasMany(Attendance::class);
+        return $this->hasMany(\App\Models\CourseSession::class);
     }
 }

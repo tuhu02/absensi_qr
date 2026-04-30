@@ -147,7 +147,7 @@ export default function StudentCourseShow() {
                                         Tanggal
                                     </th>
                                     <th className="px-6 py-3 font-semibold">
-                                        Jam Absen
+                                        Jam Kehadiran
                                     </th>
                                     <th className="px-6 py-3 font-semibold">
                                         Status

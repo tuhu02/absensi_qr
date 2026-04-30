@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Settings;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Settings\ProfileDeleteRequest;
 use App\Http\Requests\Settings\ProfileUpdateRequest;
+use App\Notifications\PendingEmailVerifyLinkNotification;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Notification;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -19,9 +21,12 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): Response
     {
+        $user = $request->user()->load('student');
+
         return Inertia::render('settings/profile', [
-            'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
+            'mustVerifyEmail' => $user instanceof MustVerifyEmail,
             'status' => $request->session()->get('status'),
+            'user' => $user,
         ]);
     }
 
@@ -30,15 +35,41 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $user = $request->user();
+        $validated = $request->validated();
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        $newEmail = $validated['email'];
+        $emailChanged = $newEmail !== $user->email;
+
+        $user->name = $validated['name'];
+
+        if ($emailChanged) {
+            $user->pending_email = $newEmail;
         }
 
-        $request->user()->save();
+        if (!empty($validated['password'])) {
+            $user->password = bcrypt($validated['password']);
+        }
 
-        return to_route('profile.edit');
+        $user->save();
+
+        if ($user->member) {
+            $user->member->update([
+                'institution' => $validated['institution'],
+                'gender' => $validated['gender'],
+                'date_of_birth' => $validated['date_of_birth'],
+                'address' => $validated['address'],
+            ]);
+        }
+
+        if ($emailChanged) {
+            Notification::route('mail', $user->pending_email)
+                ->notify(new PendingEmailVerifyLinkNotification($user, $user->pending_email));
+            
+            return to_route('profile.edit')->with('status', 'email-changed-verification-sent');
+        }
+
+        return to_route('profile.edit')->with('status', 'profile-updated');
     }
 
     /**
