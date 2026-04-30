@@ -30,7 +30,7 @@ class StudentSeeder extends Seeder
                 'email' => 'dewi.student@example.com',
                 'address' => 'Jl. Melati No. 19, Jakarta',
                 'nim' => '2022001002',
-                'study_program' => 'Sistem Informasi',
+                'study_program' => 'Teknik Informatika',
                 'gender' => 'female',
                 'date_of_birth' => '2003-06-27',
             ],

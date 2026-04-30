@@ -21,7 +21,6 @@ class ScanController extends Controller
 
         $student = $user->student;
 
-        // 1. Cari session dari QR
         $session = CourseSession::where('qr_token', $token)->first();
 
         if (! $session) {
@@ -30,7 +29,6 @@ class ScanController extends Controller
             ], 404);
         }
 
-        // 2. Cek apakah mahasiswa terdaftar di kelas ini
         $isEnrolled = $student->courses()
             ->where('courses.id', $session->course_id)
             ->exists();
@@ -41,7 +39,6 @@ class ScanController extends Controller
             ], 403);
         }
 
-        // 3. Cek apakah sudah absen
         $already = Attendance::where('course_session_id', $session->id)
             ->where('student_id', $student->id)
             ->exists();
@@ -52,11 +49,10 @@ class ScanController extends Controller
             ], 400);
         }
 
-        // 4. Simpan absensi
         $attendance = Attendance::create([
             'course_session_id' => $session->id,
             'student_id' => $student->id,
-            'status' => 'present',
+            'status' => 'hadir',
             'check_in' => now(),
         ]);
 

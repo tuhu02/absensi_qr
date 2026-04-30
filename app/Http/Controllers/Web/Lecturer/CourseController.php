@@ -21,7 +21,7 @@ class CourseController extends Controller
         ]);
     }
 
-    public function show($id, Request $request)
+    public function show(int $id, Request $request)
     {
         $lecturer = $request->user()->lecturer;
 
@@ -37,7 +37,6 @@ class CourseController extends Controller
                 'semester'
             ])
             ->findOrFail($id);
-
 
         $meetings = $class->sessions()
             ->with(['attendances.logs.student.user'])
@@ -59,6 +58,9 @@ class CourseController extends Controller
                             'proof_file' => $log->proof_file,
                         ];
                     }),
+                    'qr_url' => $session->qr_token
+                        ? url('/api/student/scan/' . $session->qr_token)
+                        : null,
                 ];
             });
 

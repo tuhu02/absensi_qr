@@ -23,7 +23,8 @@ class CourseSeeder extends Seeder
             throw new RuntimeException("Semester 'Gasal 2024/2025' not found. Run SemesterSeeder first.");
         }
 
-        $studyPrograms = StudyProgram::query()->orderBy('id')->get();
+
+        $studyPrograms = StudyProgram::query()->where('name', 'Teknik Informatika')->orderBy('id')->get();
         $lecturers = Lecturer::query()->orderBy('id')->get();
         $rooms = Room::query()->with('location')->orderBy('id')->get();
 
@@ -63,35 +64,29 @@ class CourseSeeder extends Seeder
             ['start' => '15:00', 'end' => '16:40'],
         ];
 
-        $letters = range('A', 'Z');
-        $subjectCount = count($subjectPool);
-        foreach ($studyPrograms as $studyProgram) {
-            for ($subjectIdx = 0; $subjectIdx < $subjectCount; $subjectIdx++) {
-                $subjectName = $subjectPool[$subjectIdx];
-                for ($classIdx = 0; $classIdx < 3; $classIdx++) { // 3 kelas per subject
-                    $classLetter = $letters[$classIdx];
-                    $courseName = sprintf('%s %s', $subjectName, $classLetter);
-                    $lecturer = $lecturers[($subjectIdx * 3 + $classIdx) % $lecturers->count()];
-                    $room = $rooms[($subjectIdx * 3 + $classIdx) % $rooms->count()];
-                    $slot = $timeSlots[($subjectIdx * 3 + $classIdx) % count($timeSlots)];
-                    $day = $days[($subjectIdx * 3 + $classIdx) % count($days)];
-                    $roomLabel = trim(
-                        ($room->location?->name ? $room->location->name . ' - ' : '') . $room->name
-                    );
-                    Course::query()->updateOrCreate(
-                        ['name' => $courseName],
-                        [
-                            'study_program_id' => $studyProgram->id,
-                            'semester_id' => $semester->id,
-                            'lecturer_id' => $lecturer->id,
-                            'room_id' => $room->id,
-                            'room' => $roomLabel,
-                            'day' => $day,
-                            'start_time' => $slot['start'],
-                            'end_time' => $slot['end'],
-                        ]
-                    );
-                }
+        if ($studyPrograms->isNotEmpty()) {
+            $studyProgram = $studyPrograms->first();
+            $lecturerCount = $lecturers->count();
+            $roomCount = $rooms->count();
+            $dayCount = count($days);
+            $timeSlotCount = count($timeSlots);
+
+            foreach ($subjectPool as $i => $subject) {
+                $lecturer = $lecturers[$i % $lecturerCount];
+                $room = $rooms[$i % $roomCount];
+                $day = $days[$i % $dayCount];
+                $timeSlot = $timeSlots[$i % $timeSlotCount];
+
+                Course::firstOrCreate([
+                    'name' => $subject,
+                    'study_program_id' => $studyProgram->id,
+                    'semester_id' => $semester->id,
+                    'lecturer_id' => $lecturer->id,
+                    'room_id' => $room->id,
+                    'day' => $day,
+                    'start_time' => $timeSlot['start'],
+                    'end_time' => $timeSlot['end'],
+                ]);
             }
         }
     }

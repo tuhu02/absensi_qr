@@ -9,26 +9,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Attendance extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
-        'name',
-        'course_id',
-        'date',
-        'proof_file',
+        'student_id',
+        'course_session_id',
+        'status',
+        'scanned_at',
     ];
-
-    protected $casts = [
-        'date' => 'date',
-    ];
-
-    public function course(): BelongsTo
-    {
-        return $this->belongsTo(Course::class);
-    }
-
-    public function logs(): HasMany
-    {
-        return $this->hasMany(AttendanceLog::class);
-    }
 }

@@ -20,10 +20,12 @@ class DatabaseSeeder extends Seeder
             LecturerSeeder::class,
             LocationSeeder::class,
             RoomSeeder::class,
-            CourseSeeder::class,
-            AttendanceSeeder::class,
+
             StudentSeeder::class,
+            CourseSeeder::class,
             CourseStudentSeeder::class,
+
+            CourseSessionSeeder::class,
             CourseSessionQrSeeder::class,
         ]);
     }

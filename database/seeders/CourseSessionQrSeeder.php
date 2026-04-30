@@ -10,17 +10,10 @@ class CourseSessionQrSeeder extends Seeder
 {
     public function run(): void
     {
-        $sessions = CourseSession::all();
-
-        foreach ($sessions as $session) {
-            // Skip kalau sudah ada QR
-            if ($session->qr_token) {
-                continue;
-            }
-
-            $session->update([
-                'qr_token' => Str::uuid(),
-            ]);
-        }
+        CourseSession::whereNull('qr_token')->each(function ($session) {
+            $session->forceFill([
+                'qr_token' => (string) Str::uuid(),
+            ])->save();
+        });
     }
 }

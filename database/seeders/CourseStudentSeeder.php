@@ -52,5 +52,6 @@ class CourseStudentSeeder extends Seeder
                 }
             }
         }
+
     }
 }
