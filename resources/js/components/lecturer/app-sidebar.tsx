@@ -45,26 +45,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
         navMain: [
             {
-                title: 'Akademik',
+                title: 'Kelas Saya',
                 url: '/lecturer/classes',
                 icon: BookOpen,
-                items: [
-                    {
-                        title: 'Kelas Saya',
-                        url: '/lecturer/classes',
-                        isActive: url.startsWith('/lecturer/classes'),
-                    },
-                    {
-                        title: 'Absensi',
-                        url: '/lecturer/attendance',
-                        isActive: url.startsWith('/lecturer/attendance'),
-                    },
-                    {
-                        title: 'Laporan',
-                        url: '/lecturer/reports',
-                        isActive: url.startsWith('/lecturer/reports'),
-                    },
-                ],
+                isActive: url.startsWith('/lecturer/classes'),
             },
         ],
     };

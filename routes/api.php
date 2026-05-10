@@ -16,13 +16,13 @@ use App\Http\Controllers\Api\StudyProgramController;
 use App\Http\Controllers\Api\FacultyController;
 use App\Http\Controllers\Api\Student\StudentCourseController;
 use App\Http\Controllers\Api\Auth\PendingEmailVerificationController;
-
+use App\Http\Controllers\Api\Student\PermissionProofController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::middleware('auth:sanctum')->prefix('student')->group(function () {
+Route::middleware(['auth:sanctum', 'student.api'])->prefix('student')->group(function () {
     Route::get('/classes', [StudentCourseController::class, 'index']);
     Route::get('/classes/{course}', [StudentCourseController::class, 'show']);
     Route::get('/schedule', [ScheduleController::class, 'index']);
@@ -32,6 +32,9 @@ Route::middleware('auth:sanctum')->prefix('student')->group(function () {
     Route::put('/profile', [ProfileController::class, 'update']);
 
     Route::get('/scan/{token}', [ScanController::class, 'scan']);
+
+    Route::post('/sessions/{session}/permission-proof', [PermissionProofController::class, 'store'])
+        ->middleware('student.enrolled.session');
 });
 
 Route::get('/study-program', [StudyProgramController::class, 'index']);

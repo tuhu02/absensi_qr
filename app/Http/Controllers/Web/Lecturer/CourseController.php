@@ -13,7 +13,9 @@ class CourseController extends Controller
         $lecturer = $request->user()->lecturer;
 
         $classes = $lecturer
-            ? $lecturer->classes()->with(['classroom.location', 'studyProgram'])->get()
+            ? $lecturer->classes()
+            ->with(['classroom.location', 'studyProgram'])
+            ->get()
             : [];
 
         return Inertia::render('lecturer/classes', [
@@ -25,7 +27,7 @@ class CourseController extends Controller
     {
         $lecturer = $request->user()->lecturer;
 
-        if (!$lecturer) {
+        if (! $lecturer) {
             abort(403);
         }
 
@@ -34,14 +36,45 @@ class CourseController extends Controller
                 'classroom.location',
                 'studyProgram',
                 'lecturer.user',
-                'semester'
+                'semester',
+                'students.user',
             ])
             ->findOrFail($id);
 
+        $students = $class->students;
+
         $meetings = $class->sessions()
+            ->with([
+                'attendances.student.user',
+            ])
             ->orderBy('date', 'asc')
             ->get()
-            ->map(function ($session) {
+            ->map(function ($session) use ($students) {
+                $attendances = $session->attendances->keyBy('student_id');
+
+                $studentsAttendance = $students
+                    ->map(function ($student) use ($attendances) {
+                        $attendance = $attendances->get($student->id);
+
+                        return [
+                            'student_id' => $student->id,
+                            'nim' => $student->nim
+                                ?? $student->student_number
+                                ?? $student->npm
+                                ?? '-',
+                            'name' => $student->user?->name ?? '-',
+                            'email' => $student->user?->email ?? '-',
+                            'status' => $attendance?->status ?? 'alpha',
+                            'scanned_at' => $attendance?->scanned_at,
+                            'attendance_id' => $attendance?->id,
+                            'permission_proof' => $attendance?->permission_proof
+                                ? asset('storage/' . $attendance->permission_proof)
+                                : null,
+                            'permission_proof_status' => $attendance?->permission_proof_status,
+                        ];
+                    })
+                    ->values();
+
                 return [
                     'id' => $session->id,
                     'name' => $session->name,
@@ -52,8 +85,20 @@ class CourseController extends Controller
                     'qr_url' => $session->qr_token
                         ? url('/api/student/scan/' . $session->qr_token)
                         : null,
+
+                    'students_attendance' => $studentsAttendance,
+                    'present_count' => $studentsAttendance
+                        ->where('status', 'hadir')
+                        ->count(),
+                    'permission_count' => $studentsAttendance
+                        ->where('status', 'izin')
+                        ->count(),
+                    'absent_count' => $studentsAttendance
+                        ->where('status', 'alpha')
+                        ->count(),
                 ];
-            });
+            })
+            ->values();
 
         return Inertia::render('lecturer/class-detail', [
             'class' => $class,
