@@ -10,7 +10,7 @@ export default function LecturerClasses() {
     return (
         <AppLayout>
             <Head title="Kelas Saya" />
-            <div className="flex min-h-screen w-full flex-col gap-6 bg-[#F8FAFC] p-6">
+            <div className="flex min-h-screen w-full flex-col gap-6 p-6">
                 <h1 className="text-2xl font-bold text-slate-900">
                     Kelas Saya
                 </h1>

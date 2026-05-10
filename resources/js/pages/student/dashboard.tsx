@@ -124,10 +124,8 @@ export default function Dashboard() {
                     ))}
                 </div>
 
-                {/* Grid Layout untuk Grafik dan Jadwal */}
                 <div className="grid flex-1 gap-6 lg:grid-cols-3">
-                    {/* Chart Section (2/3 Kolom) */}
-                    <div className="rounded-[2rem] border border-sky-100 bg-white p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] lg:col-span-2">
+                    <div className="rounded-4xl border border-sky-100 bg-white p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] lg:col-span-2">
                         <div className="mb-8 flex items-center justify-between">
                             <div className="flex items-center gap-2">
                                 <div className="rounded-lg bg-sky-50 p-2">
@@ -138,7 +136,7 @@ export default function Dashboard() {
                                 </h2>
                             </div>
                         </div>
-                        <div className="h-[300px] w-full overflow-hidden">
+                        <div className="h-75 w-full overflow-hidden">
                             <ResponsiveContainer width="100%" height={300}>
                                 <BarChart
                                     data={chartData}
@@ -202,7 +200,7 @@ export default function Dashboard() {
                         </div>
                     </div>
 
-                    <div className="flex flex-col gap-6 rounded-[2rem] border border-sky-100 bg-white p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+                    <div className="flex flex-col gap-6 rounded-4xl border border-sky-100 bg-white p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
                         <div>
                             <h2 className="mb-4 flex items-center gap-2 text-lg font-bold text-slate-800">
                                 <Clock className="size-5 text-sky-600" />
