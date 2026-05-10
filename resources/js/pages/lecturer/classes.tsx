@@ -12,7 +12,7 @@ export default function LecturerClasses() {
             <Head title="Kelas Saya" />
             <div className="flex min-h-screen w-full flex-col gap-6 bg-[#F8FAFC] p-6">
                 <h1 className="text-2xl font-bold text-slate-900">
-                    Kelas yang Saya Ampu
+                    Kelas Saya
                 </h1>
                 <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                     {classes.length === 0 && (

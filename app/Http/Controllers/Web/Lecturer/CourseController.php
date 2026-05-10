@@ -14,7 +14,11 @@ class CourseController extends Controller
 
         $classes = $lecturer
             ? $lecturer->classes()
-            ->with(['classroom.location', 'studyProgram'])
+            ->with([
+                'classroom.location',
+                'studyProgram',
+                'lecturer.user',
+            ])
             ->get()
             : [];
 

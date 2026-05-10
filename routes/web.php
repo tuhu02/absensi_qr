@@ -9,6 +9,7 @@ use App\Http\Controllers\Web\Admin\RoleController;
 use App\Http\Controllers\Web\Admin\StudentController;
 use App\Http\Controllers\Web\Admin\StudyProgramController;
 use App\Http\Controllers\Web\Lecturer\CourseSessionController;
+use App\Http\Controllers\Web\Lecturer\PermissionProofController as LecturerPermissionProofController;
 use App\Http\Controllers\Web\Student\ClassEnrollmentController;
 use App\Http\Controllers\Web\Student\DashboardController;
 use App\Http\Middleware\AdminMiddleware;
@@ -48,6 +49,9 @@ Route::middleware(['auth', LecturerMiddleware::class])->prefix('lecturer')->name
     Route::post('classes/{course}/sessions', [CourseSessionController::class, 'store'])
         ->name('classes.sessions.store');
 
+    Route::get('sessions/{session}', [CourseSessionController::class, 'show'])
+        ->name('sessions.show');
+
     Route::post('sessions/{session}/manual-attendance', [CourseSessionController::class, 'manualAttendance'])
         ->name('sessions.manual-attendance');
 
@@ -56,6 +60,12 @@ Route::middleware(['auth', LecturerMiddleware::class])->prefix('lecturer')->name
 
     Route::post('attendances/{attendance}/reject-proof', [CourseSessionController::class, 'rejectProof'])
         ->name('attendances.reject-proof');
+
+    Route::get('attendances/{attendance}/permission-proof', [LecturerPermissionProofController::class, 'download'])
+        ->name('attendances.permission-proof');
+
+    Route::get('attendances/{attendance}/permission-proof/view', [LecturerPermissionProofController::class, 'show'])
+        ->name('attendances.permission-proof.view');
 });
 
 Route::middleware(['auth', AdminMiddleware::class])->prefix('admin')->name('admin.')->group(function () {

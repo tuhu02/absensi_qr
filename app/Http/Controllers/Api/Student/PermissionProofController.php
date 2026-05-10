@@ -27,10 +27,10 @@ class PermissionProofController extends Controller
                 'student_id' => $student->id,
             ],
             [
-                'status' => 'izin',
                 'permission_proof' => $path,
                 'permission_proof_status' => 'pending',
                 'scanned_at' => null,
+                'status' => 'alpha',
             ],
         );
 
@@ -38,7 +38,7 @@ class PermissionProofController extends Controller
             'message' => 'Bukti izin berhasil diupload dan menunggu persetujuan dosen.',
             'data' => [
                 'attendance' => $attendance,
-                'permission_proof_url' => asset('storage/' . $path),
+                'permission_proof' => asset('storage/' . $path),
             ],
         ]);
     }
