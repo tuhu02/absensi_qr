@@ -7,7 +7,7 @@ use App\Http\Controllers\Api\Auth\LoginController;
 use App\Http\Controllers\Api\Auth\LogoutController;
 use App\Http\Controllers\Api\Auth\PasswordResetController;
 use App\Http\Controllers\Api\Auth\EmailVerificationController;
-use App\Http\Controllers\Api\ScheduleController;
+use App\Http\Controllers\Api\Student\ScheduleController;
 use App\Http\Controllers\Api\SearchController;
 use App\Http\Controllers\Api\Student\CourseEnrollmentController;
 use App\Http\Controllers\Api\Student\ProfileController;
