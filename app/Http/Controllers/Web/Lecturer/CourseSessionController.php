@@ -11,6 +11,7 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
+
 class CourseSessionController extends Controller
 {
     public function store(Request $request, Course $course)
@@ -112,7 +113,7 @@ class CourseSessionController extends Controller
     {
         do {
             $token = Str::random(40);
-        } while (CourseSession::where('qr_token', $token)->exists());
+        } while (CourseSession::query()->where('qr_token', $token)->exists());
 
         return $token;
     }
@@ -143,24 +144,22 @@ class CourseSessionController extends Controller
         return back()->with('success', 'Status kehadiran berhasil diubah.');
     }
 
-    public function approveProof(Request $request, Attendance $attendance)
+    public function approveProof(Attendance $attendance)
     {
-        $attendance->update([
-            'permission_proof_status' => 'accepted',
-            'status' => 'izin',
-            'scanned_at' => null,
-        ]);
+        $attendance->permission_proof_status = 'accepted';
+        $attendance->status = 'izin';
+        $attendance->scanned_at = null;
+        $attendance->save();
 
         return back()->with('success', 'Bukti izin diterima.');
     }
 
-    public function rejectProof(Request $request, Attendance $attendance)
+    public function rejectProof(Attendance $attendance)
     {
-        $attendance->update([
-            'permission_proof_status' => 'rejected',
-            'status' => 'alpha',
-            'scanned_at' => null,
-        ]);
+        $attendance->permission_proof_status = 'rejected';
+        $attendance->status = 'alpha';
+        $attendance->scanned_at = null;
+        $attendance->save();
 
         return back()->with('success', 'Bukti izin ditolak.');
     }

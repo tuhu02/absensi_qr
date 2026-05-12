@@ -26,12 +26,14 @@ Route::middleware(['auth:sanctum', 'student.api'])->prefix('student')->group(fun
     Route::get('/classes', [StudentCourseController::class, 'index']);
     Route::get('/classes/{course}', [StudentCourseController::class, 'show']);
     Route::get('/schedule', [ScheduleController::class, 'index']);
-    Route::post('/all-classes/{course}/enroll', [CourseEnrollmentController::class, 'enroll']);
+    Route::post('/all-classes/{course}/enroll', [CourseEnrollmentController::class, 'enroll'])
+        ->middleware('validate.course.enrollment');
 
     Route::get('/profile', [ProfileController::class, 'show']);
     Route::put('/profile', [ProfileController::class, 'update']);
 
-    Route::get('/scan/{token}', [ScanController::class, 'scan']);
+    Route::post('/scan/{session}', [ScanController::class, 'scan'])
+        ->middleware('student.enrolled.session');
 
     Route::post('/sessions/{session}/permission-proof', [PermissionProofController::class, 'store'])
         ->middleware('student.enrolled.session');

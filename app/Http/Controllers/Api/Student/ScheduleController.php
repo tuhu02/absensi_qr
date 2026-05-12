@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\CourseResource;
 use App\Models\Course;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 
 class ScheduleController extends Controller
 {
@@ -16,14 +16,14 @@ class ScheduleController extends Controller
         $studentId = request()->user()?->student?->id;
 
 
-        $todayCourses = Course::where('day', $today)
+        $todayCourses = Course::query()->where('day', $today)
             ->whereHas('students', function ($query) use ($studentId) {
                 $query->where('students.id', $studentId);
             })
             ->orderBy('start_time')
             ->get();
 
-        $tomorrowCourses = Course::where('day', $tomorrow)
+        $tomorrowCourses = Course::query()->where('day', $tomorrow)
             ->whereHas('students', function ($query) use ($studentId) {
                 $query->where('students.id', $studentId);
             })
@@ -31,8 +31,8 @@ class ScheduleController extends Controller
             ->get();
 
         return response()->json([
-            'todayCourses' => $todayCourses,
-            'tomorrowCourses' => $tomorrowCourses,
+            'todayCourses' => CourseResource::collection($todayCourses),
+            'tomorrowCourses' => CourseResource::collection($tomorrowCourses),
             'today' => $today,
             'tomorrow' => $tomorrow,
         ]);

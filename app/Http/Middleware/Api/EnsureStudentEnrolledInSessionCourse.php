@@ -7,6 +7,8 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+// memastikan student hanya bisa mengakses session/pertemuan dari course/kelas yang memang dia ikuti.
+
 class EnsureStudentEnrolledInSessionCourse
 {
     public function handle(Request $request, Closure $next): Response
@@ -14,19 +16,13 @@ class EnsureStudentEnrolledInSessionCourse
         $user = $request->user();
         $student = $user?->student;
 
-        if (! $student) {
-            return response()->json([
-                'message' => 'Unauthorized',
-            ], 403);
-        }
-
         $session = $request->route('session');
 
         if (! $session instanceof CourseSession) {
-            $session = CourseSession::find($session);
+            $session = CourseSession::query()->find($session);
         }
 
-        if (! $session) {
+        if (! $session) {   
             return response()->json([
                 'message' => 'Pertemuan tidak ditemukan',
             ], 404);

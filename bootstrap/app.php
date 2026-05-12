@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\Api\EnsureStudentEnrolledInSessionCourse;
+use App\Http\Middleware\Api\ValidateCourseEnrollment;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
 use Illuminate\Foundation\Application;
@@ -29,6 +30,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'student.api' => ApiStudentMiddleware::class,
             'student.enrolled.session' => EnsureStudentEnrolledInSessionCourse::class,
+            'validate.course.enrollment' => ValidateCourseEnrollment::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

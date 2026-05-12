@@ -16,7 +16,7 @@ class DashboardController extends Controller
         $studentId = request()->user()?->student?->id;
 
 
-        $todayCourses = Course::where('day', $today)
+        $todayCourses = Course::query()->where('day', $today)
             ->whereHas('students', function ($query) use ($studentId) {
                 $query->where('students.id', $studentId);
             })
@@ -30,7 +30,7 @@ class DashboardController extends Controller
             ->orderBy('start_time')
             ->get();
 
-        $tomorrowCourses = Course::where('day', $tomorrow)
+        $tomorrowCourses = Course::query()->where('day', $tomorrow)
             ->whereHas('students', function ($query) use ($studentId) {
                 $query->where('students.id', $studentId);
             })

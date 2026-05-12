@@ -9,37 +9,22 @@ use Illuminate\Http\Request;
 
 class ScanController extends Controller
 {
-    public function scan(Request $request, string $token)
+    public function scan(Request $request, CourseSession $session)
     {
         $user = $request->user();
-
-        if (! $user || ! $user->student) {
-            return response()->json([
-                'message' => 'Unauthorized',
-            ], 403);
-        }
-
         $student = $user->student;
+        $token = $request->input('token');
 
-        $session = CourseSession::where('qr_token', $token)->first();
-
-        if (! $session) {
+        // Validate QR token
+        if ($session->qr_token !== $token) {
             return response()->json([
                 'message' => 'QR tidak valid',
             ], 404);
         }
 
-        $isEnrolled = $student->courses()
-            ->where('courses.id', $session->course_id)
-            ->exists();
+        // Enrollment check sudah di middleware       
 
-        if (! $isEnrolled) {
-            return response()->json([
-                'message' => 'Kamu tidak terdaftar di kelas ini',
-            ], 403);
-        }
-
-        $already = Attendance::where('course_session_id', $session->id)
+        $already = Attendance::query()->where('course_session_id', $session->id)
             ->where('student_id', $student->id)
             ->exists();
 
