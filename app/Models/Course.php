@@ -50,6 +50,6 @@ class Course extends Model
 
     public function sessions()
     {
-        return $this->hasMany(\App\Models\CourseSession::class);
+        return $this->hasMany(CourseSession::class);
     }
 }

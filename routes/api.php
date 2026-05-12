@@ -7,7 +7,7 @@ use App\Http\Controllers\Api\Auth\LoginController;
 use App\Http\Controllers\Api\Auth\LogoutController;
 use App\Http\Controllers\Api\Auth\PasswordResetController;
 use App\Http\Controllers\Api\Auth\EmailVerificationController;
-use App\Http\Controllers\Api\ScheduleController;
+use App\Http\Controllers\Api\Student\ScheduleController;
 use App\Http\Controllers\Api\SearchController;
 use App\Http\Controllers\Api\Student\CourseEnrollmentController;
 use App\Http\Controllers\Api\Student\ProfileController;
@@ -16,22 +16,27 @@ use App\Http\Controllers\Api\StudyProgramController;
 use App\Http\Controllers\Api\FacultyController;
 use App\Http\Controllers\Api\Student\StudentCourseController;
 use App\Http\Controllers\Api\Auth\PendingEmailVerificationController;
-
+use App\Http\Controllers\Api\Student\PermissionProofController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::middleware('auth:sanctum')->prefix('student')->group(function () {
+Route::middleware(['auth:sanctum', 'student.api'])->prefix('student')->group(function () {
     Route::get('/classes', [StudentCourseController::class, 'index']);
     Route::get('/classes/{course}', [StudentCourseController::class, 'show']);
     Route::get('/schedule', [ScheduleController::class, 'index']);
-    Route::post('/all-classes/{course}/enroll', [CourseEnrollmentController::class, 'enroll']);
+    Route::post('/all-classes/{course}/enroll', [CourseEnrollmentController::class, 'enroll'])
+        ->middleware('validate.course.enrollment');
 
     Route::get('/profile', [ProfileController::class, 'show']);
     Route::put('/profile', [ProfileController::class, 'update']);
 
-    Route::get('/scan/{token}', [ScanController::class, 'scan']);
+    Route::post('/scan/{session}', [ScanController::class, 'scan'])
+        ->middleware('student.enrolled.session');
+
+    Route::post('/sessions/{session}/permission-proof', [PermissionProofController::class, 'store'])
+        ->middleware('student.enrolled.session');
 });
 
 Route::get('/study-program', [StudyProgramController::class, 'index']);

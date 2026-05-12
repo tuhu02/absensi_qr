@@ -12,7 +12,7 @@ class CourseSessionQrSeeder extends Seeder
     {
         CourseSession::whereNull('qr_token')->each(function ($session) {
             $session->forceFill([
-                'qr_token' => (string) Str::uuid(),
+                'qr_token' => (string) Str::random(8),
             ])->save();
         });
     }

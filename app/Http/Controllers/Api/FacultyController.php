@@ -16,7 +16,7 @@ class FacultyController extends Controller
 
         $withStudyPrograms = $request->boolean('with_study_programs');
 
-        $facultiesQuery = Faculty::query()->orderBy('name');
+        $facultiesQuery = Faculty::query()->orderBy('name', 'asc');
 
         if ($withStudyPrograms) {
             $facultiesQuery->with([

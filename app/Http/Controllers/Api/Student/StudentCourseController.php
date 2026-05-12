@@ -15,12 +15,6 @@ class StudentCourseController extends Controller
     {
         $student = $request->user()?->student;
 
-        if (! $student) {
-            return response()->json([
-                'message' => 'Student tidak ditemukan.',
-            ], 403);
-        }
-
         $courses = $student->courses()
             ->with(['lecturer', 'studyProgram'])
             ->orderBy('day')

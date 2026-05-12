@@ -17,7 +17,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function DetailAbsensi() {
-    // Data Dummy
     const courseInfo = {
         subject: 'Pemrograman Web',
         sks: 3,
@@ -61,7 +60,7 @@ export default function DetailAbsensi() {
                 </Link>
 
                 {/* Info Card */}
-                <div className="rounded-[2rem] border border-sky-100 bg-white p-8 shadow-sm">
+                <div className="rounded-4xl border border-sky-100 bg-white p-8 shadow-sm">
                     <div className="mb-6 flex items-center gap-4">
                         <div className="rounded-3xl bg-sky-100 p-4 text-sky-600">
                             <BookOpen className="size-8" />
@@ -125,7 +124,7 @@ export default function DetailAbsensi() {
                 </div>
 
                 {/* Table Card */}
-                <div className="overflow-hidden rounded-[2rem] border border-sky-100 bg-white shadow-sm">
+                <div className="overflow-hidden rounded-4xl border border-sky-100 bg-white shadow-sm">
                     <div className="flex items-center gap-2 border-b bg-sky-50/30 p-6 font-bold text-slate-800">
                         <CalendarDays className="size-5 text-sky-600" /> Riwayat
                         Kehadiran

@@ -14,5 +14,17 @@ class Attendance extends Model
         'course_session_id',
         'status',
         'scanned_at',
+        'permission_proof',
+        'permission_proof_status',
     ];
+
+    public function student()
+    {
+        return $this->belongsTo(Student::class);
+    }
+
+    public function courseSession()
+    {
+        return $this->belongsTo(CourseSession::class);
+    }
 }
