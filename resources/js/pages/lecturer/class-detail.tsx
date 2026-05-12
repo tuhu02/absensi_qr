@@ -30,14 +30,6 @@ type MeetingItem = {
     date: string;
     logged_at: string | null;
     qr_token: string;
-
-    excused_count: number;
-    excused_students: Array<{
-        name: string;
-        proof_file: string | null;
-    }>;
-
-    qr_url: string | null;
 };
 
 function formatDate(value: string): string {
@@ -126,9 +118,7 @@ export default function LecturerClassDetail() {
                                     <TableHead className="font-semibold">
                                         QR Code
                                     </TableHead>
-                                    <TableHead className="font-semibold">
-                                        Bukti Izin
-                                    </TableHead>
+                        
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -163,10 +153,10 @@ export default function LecturerClassDetail() {
                                                         </DialogHeader>
                                                         <div className="flex flex-col items-center justify-center space-y-4 py-6">
                                                             <div className="rounded-xl bg-white p-4">
-                                                                {meeting.qr_url ? (
+                                                                {meeting.qr_token ? (
                                                                     <QRCode
                                                                         value={
-                                                                            meeting.qr_url
+                                                                            meeting.qr_token
                                                                         }
                                                                         size={
                                                                             220
@@ -198,51 +188,6 @@ export default function LecturerClassDetail() {
                                                         </div>
                                                     </DialogContent>
                                                 </Dialog>
-                                            </TableCell>
-                                            <TableCell className="text-slate-700">
-                                                {meeting.excused_count > 0 ? (
-                                                    <Dialog>
-                                                        <DialogTrigger asChild>
-                                                            <button className="flex h-12 w-12 cursor-pointer items-center justify-center rounded-lg bg-yellow-100 text-[10px] font-bold text-yellow-700 transition-all hover:bg-yellow-200">
-                                                                {meeting.excused_count}
-                                                            </button>
-                                                        </DialogTrigger>
-
-                                                        <DialogContent className="sm:max-w-md">
-                                                            <DialogHeader>
-                                                                <DialogTitle className="text-center">
-                                                                    Bukti Izin -{' '}
-                                                                    {meeting.name ||
-                                                                        `Pertemuan ${index + 1}`}
-                                                                </DialogTitle>
-                                                            </DialogHeader>
-                                                            <div className="space-y-4 py-6">
-                                                                {meeting.excused_students.map((student, idx) => (
-                                                                    <div key={idx} className="flex items-center justify-between">
-                                                                        <span className="text-sm font-medium text-slate-900">
-                                                                            {student.name}
-                                                                        </span>
-                                                                        {student.proof_file ? (
-                                                                            <a
-                                                                                href={`/storage/${student.proof_file}`}
-                                                                                target="_blank"
-                                                                                className="text-xs text-sky-600 hover:underline"
-                                                                            >
-                                                                                Lihat Bukti
-                                                                            </a>
-                                                                        ) : (
-                                                                            <span className="text-xs text-slate-500">
-                                                                                Tidak ada bukti
-                                                                            </span>
-                                                                        )}
-                                                                    </div>
-                                                                ))}
-                                                            </div>
-                                                        </DialogContent>
-                                                    </Dialog>
-                                                ) : (
-                                                    <span className="text-xs text-slate-500">-</span>
-                                                )}
                                             </TableCell>
                                         </TableRow>
                                     ))

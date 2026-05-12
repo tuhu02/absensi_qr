@@ -19,7 +19,6 @@ class EmailVerificationController extends Controller
         ]);
 
         $user = $request->user();
-
         if ($user->hasVerifiedEmail()) {
             return response()->json([
                 'message' => 'Email sudah diverifikasi'

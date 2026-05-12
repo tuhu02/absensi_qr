@@ -13,7 +13,7 @@ class CourseController extends Controller
         $lecturer = $request->user()->lecturer;
 
         $classes = $lecturer
-            ? $lecturer->classes()->with(['classroom.location', 'studyProgram'])->get()
+            ? $lecturer->classes()->with(['classroom.location', 'studyProgram', 'lecturer.user'])->get()
             : [];
 
         return Inertia::render('lecturer/classes', [
@@ -50,15 +50,7 @@ class CourseController extends Controller
                     'date' => $session->date,
                     'status' => $session->status ?? null,
                     'logged_at' => $session->logged_at ?? null,
-                    'qr_token' => $session->qr_token,
-                    'excused_count' => $excusedLogs->count(),
-                    'excused_students' => $excusedLogs->map(function ($log) {
-                        return [
-                            'name' => $log->student->user->name,
-                            'proof_file' => $log->proof_file,
-                        ];
-                    }),
-                    'qr_url' => $session->qr_token
+                    'qr_token' => $session->qr_token
                         ? url('/api/student/scan/' . $session->qr_token)
                         : null,
                 ];
