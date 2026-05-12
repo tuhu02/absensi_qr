@@ -112,7 +112,7 @@ class CourseSessionController extends Controller
     private function generateUniqueQrToken(): string
     {
         do {
-            $token = Str::random(40);
+            $token = Str::random(8);
         } while (CourseSession::query()->where('qr_token', $token)->exists());
 
         return $token;
