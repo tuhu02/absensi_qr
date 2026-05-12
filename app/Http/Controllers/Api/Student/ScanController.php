@@ -13,12 +13,12 @@ class ScanController extends Controller
         $session = $request->attributes->get('course_session');
         $student = $request->user()->student;
 
-        $already = Attendance::query()
+        $hasAlreadyAttended = Attendance::query()
             ->where('course_session_id', $session->id)
             ->where('student_id', $student->id)
             ->exists();
 
-        if ($already) {
+        if ($hasAlreadyAttended) {
             return response()->json([
                 'message' => 'Kamu sudah absen',
             ], 400);
