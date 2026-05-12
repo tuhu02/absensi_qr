@@ -234,6 +234,7 @@ export default function LecturerClassDetail() {
                                     <TableHead className="font-semibold">
                                         QR Code
                                     </TableHead>
+                        
                                 </TableRow>
                             </TableHeader>
 
@@ -309,10 +310,10 @@ export default function LecturerClassDetail() {
 
                                                         <div className="flex flex-col items-center justify-center space-y-4 py-6">
                                                             <div className="rounded-xl bg-white p-4">
-                                                                {meeting.qr_url ? (
+                                                                {meeting.qr_token ? (
                                                                     <QRCode
                                                                         value={
-                                                                            meeting.qr_url
+                                                                            meeting.qr_token
                                                                         }
                                                                         size={
                                                                             220

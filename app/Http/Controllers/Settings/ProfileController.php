@@ -65,6 +65,8 @@ class ProfileController extends Controller
         if ($emailChanged) {
             Notification::route('mail', $user->pending_email)
                 ->notify(new PendingEmailVerifyLinkNotification($user, $user->pending_email));
+            
+            return to_route('profile.edit')->with('status', 'email-changed-verification-sent');
         }
 
         return to_route('profile.edit')->with('status', 'profile-updated');

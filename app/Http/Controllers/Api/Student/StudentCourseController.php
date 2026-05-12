@@ -68,6 +68,7 @@ class StudentCourseController extends Controller
 
         $meetings = collect();
 
+
         if (Schema::hasTable('course_sessions')) {
             $hasAttendances = Schema::hasTable('attendances');
 
@@ -105,6 +106,7 @@ class StudentCourseController extends Controller
                 ])
                 ->values();
         }
+
 
         return response()->json([
             'message' => 'Detail kelas berhasil diambil.',

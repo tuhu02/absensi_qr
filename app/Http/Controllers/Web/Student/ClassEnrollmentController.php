@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Web\Student;
 
 use App\Http\Controllers\Controller;
+use App\Models\Attendance;
+use App\Models\AttendanceLog;
 use App\Models\Course;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -81,7 +83,6 @@ class ClassEnrollmentController extends Controller
     public function show(Request $request, Course $course): Response
     {
         $student = $request->user()?->student;
-        abort_unless($student, 403);
 
         $isEnrolled = $student->courses()
             ->where('courses.id', $course->id)
@@ -145,10 +146,6 @@ class ClassEnrollmentController extends Controller
     public function enroll(Request $request, Course $course): RedirectResponse
     {
         $student = $request->user()?->student;
-
-        if (! $student) {
-            return back()->with('error', 'Student tidak ditemukan.');
-        }
 
         $alreadyEnrolled = $student->courses()
             ->where('courses.id', $course->id)

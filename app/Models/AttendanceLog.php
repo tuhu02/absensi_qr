@@ -5,26 +5,28 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Attendance extends Model
+class AttendanceLog extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'student_id',
-        'course_session_id',
+        'attendance_id',
         'status',
-        'scanned_at',
-        'permission_proof',
-        'permission_proof_status',
     ];
 
-    public function student()
+    protected $casts = [
+        'status' => 'string',
+    ];
+
+    public function student(): BelongsTo
     {
         return $this->belongsTo(Student::class);
     }
 
-    public function courseSession()
+    public function attendance(): BelongsTo
     {
-        return $this->belongsTo(CourseSession::class);
+        return $this->belongsTo(Attendance::class);
     }
 }

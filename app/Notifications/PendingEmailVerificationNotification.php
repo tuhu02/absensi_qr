@@ -29,6 +29,7 @@ class PendingEmailVerificationNotification extends Notification
         Otp::create([
             'user_id' => $this->user->id,
             'otp' => $otp,
+
             'type' => 'pending_email_verification',
             'expires_at' => Carbon::now()->addMinutes(60),
         ]);

@@ -41,7 +41,7 @@ export default function LecturerClasses() {
                             <div className="space-y-2 text-sm text-slate-600">
                                 <p className="flex items-center gap-2">
                                     <UserRound className="size-4 text-sky-600" />
-                                    {kelas.lecturer?.user?.name ?? '-'}
+                                    {kelas.lecturer?.user?.name}
                                 </p>
                                 <p className="flex items-center gap-2">
                                     <Clock3 className="size-4 text-sky-600" />

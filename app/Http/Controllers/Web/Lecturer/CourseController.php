@@ -13,6 +13,7 @@ class CourseController extends Controller
         $lecturer = $request->user()->lecturer;
 
         $classes = $lecturer
+
             ? $lecturer->classes()
             ->with([
                 'classroom.location',
@@ -85,8 +86,7 @@ class CourseController extends Controller
                     'date' => $session->date,
                     'status' => $session->status ?? null,
                     'logged_at' => $session->logged_at ?? null,
-                    'qr_token' => $session->qr_token,
-                    'qr_url' => $session->qr_token
+                    'qr_token' => $session->qr_token
                         ? url('/api/student/scan/' . $session->qr_token)
                         : null,
 
