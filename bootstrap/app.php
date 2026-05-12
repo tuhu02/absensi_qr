@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\Api\EnsureStudentEnrolledByQrToken;
 use App\Http\Middleware\Api\EnsureStudentEnrolledInSessionCourse;
 use App\Http\Middleware\Api\ValidateCourseEnrollment;
 use App\Http\Middleware\HandleAppearance;
@@ -29,6 +30,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'student.api' => ApiStudentMiddleware::class,
+            'student.enrolled.qr' => EnsureStudentEnrolledByQrToken::class,
             'student.enrolled.session' => EnsureStudentEnrolledInSessionCourse::class,
             'validate.course.enrollment' => ValidateCourseEnrollment::class,
         ]);

@@ -4,27 +4,17 @@ namespace App\Http\Controllers\Api\Student;
 
 use App\Http\Controllers\Controller;
 use App\Models\Attendance;
-use App\Models\CourseSession;
 use Illuminate\Http\Request;
 
 class ScanController extends Controller
 {
-    public function scan(Request $request, CourseSession $session)
+    public function scan(Request $request)
     {
-        $user = $request->user();
-        $student = $user->student;
-        $token = $request->input('token');
+        $session = $request->attributes->get('course_session');
+        $student = $request->user()->student;
 
-        // Validate QR token
-        if ($session->qr_token !== $token) {
-            return response()->json([
-                'message' => 'QR tidak valid',
-            ], 404);
-        }
-
-        // Enrollment check sudah di middleware       
-
-        $already = Attendance::query()->where('course_session_id', $session->id)
+        $already = Attendance::query()
+            ->where('course_session_id', $session->id)
             ->where('student_id', $student->id)
             ->exists();
 

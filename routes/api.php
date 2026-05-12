@@ -32,9 +32,9 @@ Route::middleware(['auth:sanctum', 'student.api'])->prefix('student')->group(fun
     Route::get('/profile', [ProfileController::class, 'show']);
     Route::put('/profile', [ProfileController::class, 'update']);
 
-    Route::post('/scan/{session}', [ScanController::class, 'scan'])
-        ->middleware('student.enrolled.session');
-
+    Route::post('/scan/{token}', [ScanController::class, 'scan'])
+        ->middleware('student.enrolled.qr');
+        
     Route::post('/sessions/{session}/permission-proof', [PermissionProofController::class, 'store'])
         ->middleware('student.enrolled.session');
 });
