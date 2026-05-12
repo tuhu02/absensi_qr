@@ -14,7 +14,7 @@ class PermissionProofController extends Controller
         $user = $request->user();
         $student = $user->student;
 
-        $validated = $request->validate([
+        $request->validate([
             'permission_proof' => ['required', 'file', 'mimes:jpg,jpeg,png,pdf,webp', 'max:2048'],
         ]);
 
