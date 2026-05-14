@@ -590,18 +590,13 @@ export default function LecturerSessionDetail() {
                                         <div className="flex flex-col items-center gap-3 text-center">
                                             <a
                                                 href={selectedProofUrl || ''}
-                                                download
+                                                target="_blank"
+                                                rel="noreferrer"
                                                 className="inline-flex items-center gap-2 rounded-lg bg-blue-50 px-4 py-2 font-semibold text-blue-600 transition hover:bg-blue-100"
                                             >
                                                 <Paperclip className="size-4" />
-                                                Download File
+                                                Buka File
                                             </a>
-
-                                            <p className="text-sm text-slate-500">
-                                                File tidak bisa ditampilkan di
-                                                sini. Klik tombol di atas untuk
-                                                download.
-                                            </p>
                                         </div>
                                     )}
                                 </div>
@@ -621,7 +616,7 @@ export default function LecturerSessionDetail() {
                                             >
                                                 {approvingProof
                                                     ? 'Menerima...'
-                                                    : 'Terima Bukti'}
+                                                    : 'Terima'}
                                             </Button>
 
                                             <Button
@@ -635,7 +630,7 @@ export default function LecturerSessionDetail() {
                                             >
                                                 {approvingProof
                                                     ? 'Menolak...'
-                                                    : 'Tolak Bukti'}
+                                                    : 'Tolak'}
                                             </Button>
                                         </div>
                                     )}

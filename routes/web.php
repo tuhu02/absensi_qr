@@ -61,9 +61,6 @@ Route::middleware(['auth', LecturerMiddleware::class])->prefix('lecturer')->name
     Route::post('attendances/{attendance}/reject-proof', [CourseSessionController::class, 'rejectProof'])
         ->name('attendances.reject-proof');
 
-    Route::get('attendances/{attendance}/permission-proof', [LecturerPermissionProofController::class, 'download'])
-        ->name('attendances.permission-proof');
-
     Route::get('attendances/{attendance}/permission-proof/view', [LecturerPermissionProofController::class, 'show'])
         ->name('attendances.permission-proof.view');
 });

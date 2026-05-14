@@ -4,20 +4,14 @@ namespace App\Http\Controllers\Api\Student;
 
 use App\Http\Controllers\Controller;
 use App\Models\Attendance;
-use App\Models\CourseSession;
 use Illuminate\Http\Request;
 
 class ScanController extends Controller
 {
-    public function scan(Request $request, CourseSession $session)
+    public function scan(Request $request)
     {
-        $user = $request->user();
-        $student = $user->student;
-        $token = $request->input('token');
-
-        $request->validate([
-            'token' => 'string|required|min:8',
-        ]);
+        $session = $request->attributes->get('course_session');
+        $student = $request->user()->student;
 
         // Validate QR token
         if ($session->qr_token !== $token) {
@@ -26,12 +20,12 @@ class ScanController extends Controller
             ], 404);
         }
 
-        $already = Attendance::query()
+        $hasAlreadyAttended = Attendance::query()
             ->where('course_session_id', $session->id)
             ->where('student_id', $student->id)
             ->exists();
 
-        if ($already) {
+        if ($hasAlreadyAttended) {
             return response()->json([
                 'message' => 'Kamu sudah absen',
             ], 400);
