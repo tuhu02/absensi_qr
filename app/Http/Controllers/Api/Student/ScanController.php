@@ -13,13 +13,6 @@ class ScanController extends Controller
         $session = $request->attributes->get('course_session');
         $student = $request->user()->student;
 
-        // Validate QR token
-        if ($session->qr_token !== $token) {
-            return response()->json([
-                'message' => 'QR tidak valid',
-            ], 404);
-        }
-
         $hasAlreadyAttended = Attendance::query()
             ->where('course_session_id', $session->id)
             ->where('student_id', $student->id)
