@@ -27,7 +27,7 @@ class CourseSessionSeeder extends Seeder
                         'date' => $date,
                     ],
                     [
-                        'qr_token' => (string) Str::uuid(),
+                        'qr_token' => (string) Str::random(8),
                     ]
                 );
             }

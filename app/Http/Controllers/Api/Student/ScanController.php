@@ -15,6 +15,10 @@ class ScanController extends Controller
         $student = $user->student;
         $token = $request->input('token');
 
+        $request->validate([
+            'token' => 'string|required|min:8',
+        ]);
+
         // Validate QR token
         if ($session->qr_token !== $token) {
             return response()->json([
@@ -22,9 +26,8 @@ class ScanController extends Controller
             ], 404);
         }
 
-        // Enrollment check sudah di middleware       
-
-        $already = Attendance::query()->where('course_session_id', $session->id)
+        $already = Attendance::query()
+            ->where('course_session_id', $session->id)
             ->where('student_id', $student->id)
             ->exists();
 

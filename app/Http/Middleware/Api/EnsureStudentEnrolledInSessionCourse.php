@@ -22,9 +22,9 @@ class EnsureStudentEnrolledInSessionCourse
             $session = CourseSession::query()->find($session);
         }
 
-        if (! $session) {   
+        if (! $session) {
             return response()->json([
-                'message' => 'Pertemuan tidak ditemukan',
+                'message' => 'QR code tidak valid',
             ], 404);
         }
 

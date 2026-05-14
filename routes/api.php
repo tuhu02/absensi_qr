@@ -17,6 +17,14 @@ use App\Http\Controllers\Api\FacultyController;
 use App\Http\Controllers\Api\Student\StudentCourseController;
 use App\Http\Controllers\Api\Auth\PendingEmailVerificationController;
 use App\Http\Controllers\Api\Student\PermissionProofController;
+use App\Models\CourseSession;
+
+Route::bind('session', function ($value) {
+    return CourseSession::query()
+        ->where('qr_token', $value)
+        ->first()
+        ?: (is_numeric($value) ? CourseSession::query()->find($value) : null);
+});
 
 Route::get('/user', function (Request $request) {
     return $request->user();
