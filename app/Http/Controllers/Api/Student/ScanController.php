@@ -28,7 +28,7 @@ class ScanController extends Controller
             'course_session_id' => $session->id,
             'student_id' => $student->id,
             'status' => 'hadir',
-            'check_in' => now(),
+            'scanned_at' => now(),
         ]);
 
         return response()->json([
