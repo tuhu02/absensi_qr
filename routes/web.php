@@ -9,6 +9,7 @@ use App\Http\Controllers\Web\Admin\RoleController;
 use App\Http\Controllers\Web\Admin\StudentController;
 use App\Http\Controllers\Web\Admin\StudyProgramController;
 use App\Http\Controllers\Web\Lecturer\CourseSessionController;
+use App\Http\Controllers\Web\Lecturer\DashboardController as LecturerDashboardController;
 use App\Http\Controllers\Web\Lecturer\PermissionProofController as LecturerPermissionProofController;
 use App\Http\Controllers\Web\Student\ClassEnrollmentController;
 use App\Http\Controllers\Web\Student\DashboardController;
@@ -39,12 +40,13 @@ Route::middleware(['auth', 'verified', StudentMiddleware::class])->prefix('stude
 });
 
 Route::middleware(['auth', LecturerMiddleware::class])->prefix('lecturer')->name('lecturer.')->group(function () {
-    Route::get('dashboard', function () {
-        return Inertia::render('lecturer/dashboard');
-    })->name('dashboard');
+    Route::get('dashboard', [LecturerDashboardController::class, 'index'])->name('dashboard');
 
     Route::get('classes', [LecturerCourseController::class, 'index'])->name('classes');
     Route::get('classes/{id}', [LecturerCourseController::class, 'show'])->name('classes.show');
+    Route::get('reports', function () {
+        return Inertia::render('lecturer/report');
+    })->name('reports');
 
     Route::post('classes/{course}/sessions', [CourseSessionController::class, 'store'])
         ->name('classes.sessions.store');
@@ -69,6 +71,7 @@ Route::middleware(['auth', AdminMiddleware::class])->prefix('admin')->name('admi
     Route::get('dashboard', function () {
         return Inertia::render('admin/dashboard');
     })->name('dashboard');
+
 
     Route::resource('/roles', RoleController::class)->middleware('can:manage_roles')->except(['show']);
     Route::resource('/courses', CourseController::class)->middleware('can:manage_classes')->except(['show']);

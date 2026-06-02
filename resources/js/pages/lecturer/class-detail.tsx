@@ -32,6 +32,15 @@ import { Label } from '@/components/ui/label';
 import QRCode from 'react-qr-code';
 import React from 'react';
 
+import {
+    Breadcrumb,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbList,
+    BreadcrumbPage,
+    BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb';
+
 type MeetingItem = {
     id: number;
     name: string;
@@ -95,8 +104,30 @@ export default function LecturerClassDetail() {
     return (
         <AppLayout>
             <Head title={`Detail Kelas - ${kelas.name}`} />
-
             <div className="flex min-h-screen w-full flex-col gap-6 bg-[#F8FAFC] p-6">
+                <Breadcrumb>
+                    <BreadcrumbList>
+                        <BreadcrumbItem>
+                            <BreadcrumbLink href="/lecturer/dashboard">
+                                Kelas saya
+                            </BreadcrumbLink>
+                        </BreadcrumbItem>
+
+                        <BreadcrumbSeparator />
+
+                        <BreadcrumbItem>
+                            <BreadcrumbLink href="/lecturer/classes">
+                                Detail Kelas
+                            </BreadcrumbLink>
+                        </BreadcrumbItem>
+
+                        <BreadcrumbSeparator />
+
+                        <BreadcrumbItem>
+                            <BreadcrumbPage>{kelas.name}</BreadcrumbPage>
+                        </BreadcrumbItem>
+                    </BreadcrumbList>
+                </Breadcrumb>
                 <div className="rounded-2xl border border-sky-100 bg-white p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
                     <h1 className="text-2xl font-bold tracking-tight text-slate-900">
                         {kelas.name}
@@ -234,7 +265,6 @@ export default function LecturerClassDetail() {
                                     <TableHead className="font-semibold">
                                         QR Code
                                     </TableHead>
-                        
                                 </TableRow>
                             </TableHeader>
 

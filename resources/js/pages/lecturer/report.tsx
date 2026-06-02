@@ -101,15 +101,6 @@ export default function Dashboard() {
             <Head title="Dashboard" />
 
             <div className="flex min-h-full w-full flex-col gap-6 bg-slate-50 p-6">
-                <div>
-                    <h1 className="text-xl font-semibold text-slate-900">
-                        Selamat datang, {firstName}
-                    </h1>
-                    <p className="mt-0.5 text-sm text-slate-500">
-                        Ringkasan aktivitas mengajar dan statistik kelas Anda
-                    </p>
-                </div>
-
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                     {stats.map((s) => (
                         <div

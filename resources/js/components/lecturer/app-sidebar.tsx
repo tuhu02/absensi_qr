@@ -9,6 +9,7 @@ import {
     Book,
     BookOpen,
     PieChart,
+    FileText,
 } from 'lucide-react';
 
 import { NavMain } from '@/components/lecturer/nav-main';
@@ -40,6 +41,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 url: '/lecturer/dashboard',
                 icon: PieChart,
                 isActive: url.startsWith('/lecturer/dashboard'),
+            },
+            {
+                title: 'Laporan',
+                url: '/lecturer/reports',
+                icon: FileText,
+                isActive: url.startsWith('/lecturer/reports'),
             },
         ],
 
