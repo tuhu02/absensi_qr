@@ -26,6 +26,18 @@ interface CalendarEvents {
     [dateStr: string]: ClassEvent[];
 }
 
+
+type Course = {
+    id: number;
+    name: string;
+};
+
+type CourseSession = {
+    id: number;
+    date: string;
+    course: Course;
+};
+
 // ==========================================
 // DATA JADWAL MASTER DOSEN (Samping Kanan)
 // ==========================================
@@ -84,6 +96,12 @@ export default function Dashboard() {
     };
 
     const calendarDays = generateCalendarGrid();
+
+    const { todaySchedule } = usePage<{
+        todaySchedule: CourseSession[];
+    }>().props;
+
+    console.log(todaySchedule);
 
     return (
         <AppLayout>
@@ -197,18 +215,18 @@ export default function Dashboard() {
 
                         {/* List Scroll Card Jadwal */}
                         <div className="flex-1 overflow-y-auto space-y-3 pr-1 scrollbar-thin">
-                            {MASTER_COURSES.map((course, index) => (
+                            {todaySchedule.map((course, index) => (
                                 <div 
                                     key={index} 
-                                    className="p-4 rounded-xl border border-sky-100/60 bg-gradient-to-r from-sky-50/40 to-white hover:shadow-xs transition flex flex-col gap-2.5 group"
+                                    className="p-4 rounded-xl border border-sky-100/60 bg-linear-to-r from-sky-50/40 to-white hover:shadow-xs transition flex flex-col gap-2.5 group"
                                 >
                                     <div className="flex justify-between items-start">
                                         <div>
-                                            <span className="text-[9px] font-bold text-sky-600 bg-sky-100/50 px-2 py-0.5 rounded-md tracking-wide uppercase">
+                                            {/* <span className="text-[9px] font-bold text-sky-600 bg-sky-100/50 px-2 py-0.5 rounded-md tracking-wide uppercase">
                                                 {course.code} • KELAS {course.class}
-                                            </span>
+                                            </span> */}
                                             <h4 className="font-semibold text-slate-800 text-sm mt-1.5 group-hover:text-sky-600 transition-colors">
-                                                {course.name}
+                                                {course.course.name}
                                             </h4>
                                         </div>
                                     </div>
@@ -217,19 +235,15 @@ export default function Dashboard() {
                                     <div className="grid grid-cols-2 gap-y-2 gap-x-1 text-xs text-slate-500 bg-slate-50/80 p-2.5 rounded-lg border border-slate-100/80">
                                         <div className="flex items-center gap-1.5">
                                             <Clock className="size-3.5 text-slate-400" /> 
-                                            <span className="font-medium text-slate-700">{course.day}</span>
+                                            <span className="font-medium text-slate-700">{course.date}</span>
                                         </div>
-                                        <div className="flex items-center gap-1.5">
-                                            <span className="text-slate-400 font-medium">🕒</span> 
-                                            <span className="text-slate-600 font-medium">{course.time}</span>
-                                        </div>
-                                        <div className="flex items-center gap-1.5 col-span-2 text-[11px] pt-1.5 border-t border-slate-200/50 text-slate-400">
+                                        {/* <div className="flex items-center gap-1.5 col-span-2 text-[11px] pt-1.5 border-t border-slate-200/50 text-slate-400">
                                             <MapPin className="size-3 text-slate-400" />
                                             <span className="truncate">Ruang: {course.room}</span>
                                             <span className="mx-1 text-slate-300">|</span>
                                             <Users className="size-3 text-slate-400" />
                                             <span>{course.studentsCount} Mhs</span>
-                                        </div>
+                                        </div> */}
                                     </div>
                                 </div>
                             ))}

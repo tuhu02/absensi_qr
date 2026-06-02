@@ -16,10 +16,19 @@ class DashboardController extends Controller
         $tomorow = Carbon::tomorrow()->locale('id')->dayName;
         $lecturerId = request()->user()?->lecturer?->id;
 
-        $todaySchedule = CourseSession::query()->where('date', $today)->get();
+        $todaySchedule = CourseSession::query()->with('course')->where('date', $today)->whereHas('course', function($query) use ($lecturerId){
+            $query->where('lecturer_id', $lecturerId);
+        })->get()->map(function($session){
+            return [
+                'id' => $session->id,
+                'course_name' => $session->course->name,
+            ];
+        });
 
-        dd($todaySchedule);
+        
 
-        return Inertia::render('lecturer/dashboard');
+        return Inertia::render('lecturer/dashboard',[
+            'todaySchedule' => $todaySchedule,
+        ]);
     }
 }
