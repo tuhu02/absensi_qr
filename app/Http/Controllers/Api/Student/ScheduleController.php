@@ -15,7 +15,6 @@ class ScheduleController extends Controller
         $tomorrow = Carbon::tomorrow()->locale('id')->dayName;
         $studentId = request()->user()?->student?->id;
 
-
         $todayCourses = Course::query()->where('day', $today)
             ->whereHas('students', function ($query) use ($studentId) {
                 $query->where('students.id', $studentId);
